@@ -1,0 +1,21 @@
+<h1>{{title}}</h1>
+
+<nav>
+    <ul>
+        <li><a href="/">Inicio</a></li>
+        <li><a href="/profile">Perfil</a></li>
+        <li><a href="/foro">Foro</a></li>
+        <a href="/logout">Cerrar sesión</a>
+    </ul>
+</nav>
+
+<h2>¡Hola! Este es la página de tu perfil.</h2>
+
+<p>Nombre de usuario: {{user.username}}</p>
+
+<h2>Posts</h2>
+<ul>
+  {{#each user.posts}}
+    <li>{{this.title}}</li>
+  {{/each}}
+</ul>

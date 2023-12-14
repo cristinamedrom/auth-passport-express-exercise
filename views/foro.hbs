@@ -1,0 +1,39 @@
+<h1>{{title}}</h1>
+
+<nav>
+    <ul>
+        <li><a href="/">Inicio</a></li>
+        <li><a href="/profile">Perfil</a></li>
+        <li><a href="/foro">Foro</a></li>
+        <a href="/logout">Cerrar sesión</a>
+    </ul>
+</nav>
+
+{{#if user}}
+<form action="/foro" method="post">
+    <label for="title">Título:</label>
+    <input type="text" id="title" name="title" required>
+
+    <label for="content">Contenido:</label>
+    <textarea id="content" name="content" required></textarea>
+
+    <button type="submit">Publicar</button>
+</form>
+{{/if}}
+
+<ul>
+    {{#each posts}}
+    <li>
+        <strong>{{this.title}}</strong>
+        <p>{{this.content}}</p>
+        {{#if ../user}}
+        {{#if (eq ../user.id this.authorId)}}
+        <form action="/foro/delete/{{this.id}}" method="post">
+            <button type="submit">Borrar</button>
+        </form>
+        {{/if}}
+        {{/if}}
+        <p>Usuario: {{this.author.username}}</p>
+    </li>
+    {{/each}}
+</ul>
