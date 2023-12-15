@@ -11,14 +11,7 @@ const path = require('path');
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcrypt');
 const prisma = new PrismaClient();
-const helpers = require('./utils/helpers');
-const hbs = exphbs.create({
-    helpers: {
-        eq: function (a, b) {
-            return a === b;
-        },
-    },
-});
+const flash = require('express-flash');
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -27,6 +20,7 @@ app.use(session({
     resave: false,
     saveUninitialized: false
 }));
+app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static('public'));
@@ -37,7 +31,13 @@ app.engine('hbs', exphbs.create({
     partialsDir: path.join(__dirname, 'views/partials'),
     helpers: require('./utils/helpers')
 }).engine);
-app.engine('handlebars', hbs.engine);
+app.engine('handlebars', exphbs.create({
+    helpers: {
+        eq: function (a, b) {
+            return a === b;
+        },
+    },
+}).engine);
 app.set('view engine', 'handlebars');
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'views'));

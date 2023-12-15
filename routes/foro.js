@@ -7,6 +7,7 @@ const handleError = (res, errorMessage) => {
     console.error(errorMessage);
     res.render('error', { message: errorMessage });
 };
+
 router.get('/', async (req, res) => {
     try {
         const posts = await prisma.post.findMany({
@@ -16,7 +17,8 @@ router.get('/', async (req, res) => {
         });
         res.render('foro', { title: 'Foro', posts });
     } catch (error) {
-        handleError(res, 'Error al cargar los posts del foro:', error);
+        console.error('Error al cargar los posts del foro:', error);
+        res.render('error', { message: 'Error al cargar los posts del foro' });
     }
 });
 

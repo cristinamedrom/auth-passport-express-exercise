@@ -5,20 +5,14 @@ const prisma = new PrismaClient();
 
 router.get('/', async (req, res) => {
     try {
-        const username = req.user.username;
-        return res.redirect(`/profile/${username}`);
-    } catch (error) {
-        console.error('Error al obtener el perfil del usuario:', error);
-        res.render('error', { message: 'Error al obtener el perfil del usuario' });
-    }
-});
+        const currentUser = req.user;
 
-router.get('/:username', async (req, res) => {
-    const { username } = req.params;
+        if (!currentUser) {
+            return res.status(401).render('error', { message: 'Debes iniciar sesión para ver tu perfil.' });
+        }
 
-    try {
         const user = await prisma.user.findUnique({
-            where: { username },
+            where: { id: currentUser.id },
             include: {
                 posts: true,
             },
@@ -30,8 +24,8 @@ router.get('/:username', async (req, res) => {
 
         res.render('profile', { title: `Perfil de ${user.username}`, user });
     } catch (error) {
-        console.error('Error al obtener el perfil del usuario:', error);
-        res.render('error', { message: 'Error al obtener el perfil del usuario' });
+        console.error('Error al cargar el perfil del usuario:', error);
+        res.render('error', { message: 'Error al cargar el perfil del usuario' });
     }
 });
 

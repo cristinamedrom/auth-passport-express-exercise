@@ -9,7 +9,7 @@
     </ul>
 </nav>
 
-{{#if user}}
+
 <form action="/foro" method="post">
     <label for="title">Título:</label>
     <input type="text" id="title" name="title" required>
@@ -19,13 +19,14 @@
 
     <button type="submit">Publicar</button>
 </form>
-{{/if}}
+
 
 <ul>
     {{#each posts}}
     <li>
         <strong>{{this.title}}</strong>
         <p>{{this.content}}</p>
+        <p>Usuario: {{this.author.username}}</p>
         {{#if ../user}}
         {{#if (eq ../user.id this.authorId)}}
         <form action="/foro/delete/{{this.id}}" method="post">
@@ -33,7 +34,6 @@
         </form>
         {{/if}}
         {{/if}}
-        <p>Usuario: {{this.author.username}}</p>
     </li>
     {{/each}}
 </ul>
