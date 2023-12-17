@@ -23,17 +23,17 @@
 
 <ul>
     {{#each posts}}
+    <br>
     <li>
         <strong>{{this.title}}</strong>
         <p>{{this.content}}</p>
         <p>Usuario: {{this.author.username}}</p>
-        {{#if ../user}}
-        {{#if (eq ../user.id this.authorId)}}
         <form action="/foro/delete/{{this.id}}" method="post">
             <button type="submit">Borrar</button>
         </form>
-        {{/if}}
-        {{/if}}
+
+
     </li>
+    <br>
     {{/each}}
 </ul>

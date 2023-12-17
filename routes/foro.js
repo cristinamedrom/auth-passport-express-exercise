@@ -29,6 +29,7 @@ router.post('/', async (req, res) => {
         const currentUser = req.user;
 
         if (!currentUser) {
+            console.log("No has iniciado sesión");
             return res.status(401).render('error', { message: 'Debes iniciar sesión para publicar un post.' });
         }
 
@@ -46,7 +47,14 @@ router.post('/', async (req, res) => {
     }
 });
 
-router.post('/delete/:postId', async (req, res) => {
+const isAuthenticated = (req, res, next) => {
+    if (req.isAuthenticated()) {
+        return next();
+    }
+    res.redirect('/');
+};
+
+router.post('/delete/:postId', isAuthenticated, async (req, res) => {
     const postId = req.params.postId;
 
     try {
@@ -57,6 +65,7 @@ router.post('/delete/:postId', async (req, res) => {
         });
 
         if (!postToDelete || postToDelete.authorId !== currentUser.id) {
+            console.log("No puedes eliminar un post que no es tuyo.");
             return res.status(403).render('error', { message: 'No puedes borrar un post que no es tuyo.' });
         }
 

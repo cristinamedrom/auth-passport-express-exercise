@@ -20,7 +20,7 @@ router.post('/', async (req, res) => {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        
+
         const newUser = await prisma.user.create({
             data: {
                 username,
@@ -32,7 +32,7 @@ router.post('/', async (req, res) => {
             if (err) {
                 return res.render('register', { error: 'Error al iniciar sesión después del registro' });
             }
-            return res.redirect(`/profile/${username}`);
+            return res.redirect(`/profile/`);
         });
     } catch (error) {
         console.error('Error al registrar usuario:', error);

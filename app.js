@@ -5,7 +5,7 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const exphbs = require('express-handlebars');
 const session = require('express-session');
-const passport = require('passport');
+const passport = require('./config/passport');
 const LocalStrategy = require('passport-local').Strategy;
 const path = require('path');
 const { PrismaClient } = require('@prisma/client');
@@ -24,6 +24,7 @@ app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static('public'));
+app.use(express.json());
 
 app.engine('hbs', exphbs.create({
     extname: 'hbs',
@@ -51,40 +52,6 @@ app.use('/', indexRouter);
 app.use('/sign-up', signUpRouter);
 app.use('/profile', profileRouter);
 app.use('/foro', foroRouter);
-
-passport.use(new LocalStrategy(
-    async (username, password, done) => {
-        try {
-            const user = await prisma.user.findUnique({
-                where: { username },
-            });
-
-            if (!user || !(await bcrypt.compare(password, user.password))) {
-                return done(null, false, { message: 'Nombre de usuario o contraseña incorrectos' });
-            }
-
-            return done(null, user);
-        } catch (error) {
-            return done(error);
-        }
-    }
-));
-
-passport.serializeUser((user, done) => {
-    done(null, user.id);
-});
-
-passport.deserializeUser(async (id, done) => {
-    try {
-        const user = await prisma.user.findUnique({
-            where: { id },
-        });
-
-        done(null, user);
-    } catch (error) {
-        done(error);
-    }
-});
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
